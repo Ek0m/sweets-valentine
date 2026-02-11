@@ -1,39 +1,11 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
 import { Music, VolumeX } from "lucide-react";
 import { motion } from "framer-motion";
+import { useAudio } from "@/app/context/AudioContext";
 
 export default function BackgroundMusic() {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const audioRef = useRef<HTMLAudioElement | null>(null);
-
-  useEffect(() => {
-    // Initialize audio
-    // Source: Kevin MacLeod - Gymnopedie No 1 (incompetech.com)
-    audioRef.current = new Audio(
-      "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Gymnopedie%20No%201.mp3",
-    );
-    audioRef.current.loop = true;
-    audioRef.current.volume = 0.5;
-
-    return () => {
-      audioRef.current?.pause();
-    };
-  }, []);
-
-  const togglePlay = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause();
-      } else {
-        audioRef.current
-          .play()
-          .catch((e) => console.log("Audio play failed:", e));
-      }
-      setIsPlaying(!isPlaying);
-    }
-  };
+  const { isPlaying, togglePlay } = useAudio();
 
   return (
     <motion.button

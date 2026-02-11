@@ -4,7 +4,6 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import SweetPack from "@/components/SweetPack";
 import Proposal from "@/components/Proposal";
-import BackgroundMusic from "@/components/BackgroundMusic";
 
 export default function Home() {
   const [step, setStep] = useState<"pack" | "proposal">("pack");
@@ -37,8 +36,6 @@ export default function Home() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <BackgroundMusic />
     </main>
   );
 }

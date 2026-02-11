@@ -5,6 +5,7 @@ import { Heart, Flower } from "lucide-react";
 import { useState, useEffect } from "react";
 import confetti from "canvas-confetti";
 import { useRouter } from "next/navigation";
+import { createPortal } from "react-dom";
 
 export default function Proposal() {
   const router = useRouter();
@@ -16,16 +17,20 @@ export default function Proposal() {
   const [hasMoved, setHasMoved] = useState(false);
   const [noClicked, setNoClicked] = useState(false);
 
-  const handleNoHover = () => {
-    // Calculate random position within viewport, keeping some padding
-    const btnWidth = 150; // approximate width
-    const btnHeight = 60; // approximate height
+  const handleNoHover = (e?: React.MouseEvent | React.TouchEvent) => {
+    // Get button dimensions if available, otherwise fallback
+    const btnWidth = (e?.target as HTMLElement)?.offsetWidth || 150;
+    const btnHeight = (e?.target as HTMLElement)?.offsetHeight || 50;
     const padding = 20;
 
     // Ensure we don't place button off-screen
+    // Use window.innerWidth/Height minus button size minus padding
     const maxX = window.innerWidth - btnWidth - padding;
     const maxY = window.innerHeight - btnHeight - padding;
 
+    // Generate random position within safe bounds
+    // Ensure we don't return negative values if screen is very small
+    // Also add padding to start position
     const x = Math.max(padding, Math.random() * maxX);
     const y = Math.max(padding, Math.random() * maxY);
 
@@ -100,11 +105,11 @@ export default function Proposal() {
 
       {/* Mobile-friendly Typography */}
       <h1 className="text-3xl md:text-6xl font-dancing font-bold text-rose-600 mb-8 md:mb-12 drop-shadow-sm px-4">
-        Will you be my Valentine?
+        Angela, Would you be my Valentine?
       </h1>
 
       {/* Mobile-friendly Button Layout */}
-      <div className="flex flex-col md:flex-row gap-4 md:gap-8 items-center justify-center relative w-full h-40 md:h-24">
+      <div className="flex gap-8 items-center justify-center relative w-full h-24">
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.95 }}
@@ -114,19 +119,34 @@ export default function Proposal() {
           Yes! 💖
         </motion.button>
 
-        <motion.button
-          className="px-8 py-3 bg-zinc-400 text-white rounded-full text-xl md:text-2xl font-dancing shadow-lg hover:bg-zinc-500 transition-colors z-50"
-          style={{
-            position: hasMoved ? "fixed" : "static",
-            left: hasMoved ? noBtnPosition.x : "auto",
-            top: hasMoved ? noBtnPosition.y : "auto",
-          }}
-          initial={false}
-          onMouseEnter={!noClicked ? handleNoHover : undefined}
-          onClick={() => setNoClicked(true)}
-        >
-          {noClicked ? "😛" : "No 😢"}
-        </motion.button>
+        {hasMoved ? (
+          createPortal(
+            <motion.button
+              className="px-8 py-3 bg-zinc-400 text-white rounded-full text-xl md:text-2xl font-dancing shadow-lg hover:bg-zinc-500 transition-colors z-50 fixed"
+              style={{
+                left: noBtnPosition.x,
+                top: noBtnPosition.y,
+              }}
+              initial={{ scale: 0 }}
+              animate={{ scale: 1 }}
+              onMouseEnter={!noClicked ? handleNoHover : undefined}
+              onTouchStart={!noClicked ? handleNoHover : undefined}
+              onClick={() => setNoClicked(true)}
+            >
+              {noClicked ? "😛" : "No 😢"}
+            </motion.button>,
+            document.body,
+          )
+        ) : (
+          <motion.button
+            className="px-8 py-3 bg-zinc-400 text-white rounded-full text-xl md:text-2xl font-dancing shadow-lg hover:bg-zinc-500 transition-colors z-50"
+            onMouseEnter={!noClicked ? handleNoHover : undefined}
+            onTouchStart={!noClicked ? handleNoHover : undefined}
+            onClick={() => setNoClicked(true)}
+          >
+            No 😢
+          </motion.button>
+        )}
       </div>
     </motion.div>
   );

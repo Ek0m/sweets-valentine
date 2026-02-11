@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { Coffee, MapPin, Utensils, Stars } from "lucide-react";
 import Link from "next/link";
-import BackgroundMusic from "@/components/BackgroundMusic";
 
 const activities = [
   {
@@ -115,7 +114,19 @@ export default function Itinerary() {
         </Link>
       </motion.div>
 
-      <BackgroundMusic />
+      <motion.div
+        className="mt-16"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5 }}
+      >
+        <Link
+          href="/"
+          className="px-8 py-3 bg-white text-rose-500 rounded-full font-bold shadow-md hover:bg-rose-50 transition-colors"
+        >
+          Go Back Home
+        </Link>
+      </motion.div>
     </main>
   );
 }

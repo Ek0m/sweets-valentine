@@ -2,12 +2,20 @@
 
 import { motion } from "framer-motion";
 import { Heart } from "lucide-react";
+import { useAudio } from "@/app/context/AudioContext";
 
 interface SweetPackProps {
   onOpen: () => void;
 }
 
 export default function SweetPack({ onOpen }: SweetPackProps) {
+  const { play } = useAudio();
+
+  const handleOpen = () => {
+    play();
+    onOpen();
+  };
+
   return (
     <motion.div
       className="relative cursor-pointer flex flex-col items-center justify-center p-4 md:p-8"
@@ -16,7 +24,7 @@ export default function SweetPack({ onOpen }: SweetPackProps) {
       exit={{ scale: 1.5, opacity: 0 }}
       whileHover={{ scale: 1.1 }}
       transition={{ type: "spring", stiffness: 260, damping: 20 }}
-      onClick={onOpen}
+      onClick={handleOpen}
     >
       {/* Animated Envelope / Gift Box Representation */}
       <motion.div
@@ -36,7 +44,7 @@ export default function SweetPack({ onOpen }: SweetPackProps) {
             />
           </div>
           <p className="font-dancing text-xl md:text-2xl text-rose-800 mt-4">
-            For You
+            For You <br /> My Sweets
           </p>
         </div>
       </motion.div>
